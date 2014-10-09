@@ -17,7 +17,7 @@ crux user-create -n "${GLANCE_KEYSTONE_USER}" \
 
 crux endpoint-create -n glance -t image \
 	-I "http://${GLANCE_API_PORT_9292_TCP_ADDR}:9292" \
-	-P "http://${PUBLIC_IP}:9292" \
+	-P "http://${GLANCE_API_PORT_9292_TCP_ADDR}:9292" \
 	-A "http://${GLANCE_API_PORT_9292_TCP_ADDR}:9292"
 
 exec /usr/bin/glance-api
