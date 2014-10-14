@@ -63,7 +63,7 @@ crux endpoint-create --remove-all \
     -n keystone -t identity \
     -I "http://${KEYSTONE_PUBLIC_SERVICE_HOST}:5000/v2.0" \
     -A "http://${KEYSTONE_ADMIN_SERVICE_HOST}:35357/v2.0" \
-    -P "http://${PUBLIC_IP}:5000/v2.0"
+    -P "http://${KEYSTONE_PUBLIC_SERVICE_HOST}:5000/v2.0"
 
 kill -TERM $PID
 
