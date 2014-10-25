@@ -9,6 +9,7 @@
 : ${ADMIN_TENANT_NAME:=admin}
 : ${RABBIT_USERID:=guest}
 : ${RABBIT_PASSWORD:=guest}
+: ${BRIDGE_ADDRESS_BASE:=10.251}
 
 check_required_vars KEYSTONE_ADMIN_TOKEN \
     NOVA_DB_PASSWORD
