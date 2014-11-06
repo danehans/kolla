@@ -10,4 +10,4 @@ echo "Starting virtlockd."
 sleep 3
 
 echo "Starting libvirtd."
-exec /usr/sbin/libvirtd --listen
+exec /usr/sbin/libvirtd --listen --without-firewalld
