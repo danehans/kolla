@@ -12,6 +12,8 @@ set -e
 : ${RABBIT_HOST:=$RABBITMQ_SERVICE_HOST}
 : ${RABBIT_USER:=guest}
 : ${RABBIT_PASSWORD:=guest}
+: ${VERBOSE_LOGGING:=false}
+: ${DEBUG_LOGGING:=false}
 
 check_required_vars NEUTRON_KEYSTONE_PASSWORD
 dump_vars
@@ -22,6 +24,16 @@ export OS_USERNAME="${NEUTRON_KEYSTONE_USER}"
 export OS_PASSWORD="${NEUTRON_KEYSTONE_PASSWORD}"
 export OS_TENANT_NAME="${ADMIN_TENANT_NAME}"
 EOF
+
+# Logging
+crudini --set /etc/neutron/neutron.conf \
+        DEFAULT \
+        verbose \
+        "${VERBOSE_LOGGING}"
+crudini --set /etc/neutron/neutron.conf \
+        DEFAULT \
+        debug \
+        "${DEBUG_LOGGING}"
 
 # Rabbit
 crudini --set /etc/neutron/neutron.conf \

@@ -1,0 +1,16 @@
+FROM kollaglue/fedora-rdo-neutron-base
+MAINTAINER Kolla Project (https://launchpad.net/kolla)
+
+#Install required packages
+RUN yum install -y openstack-neutron \
+        python-neutronclient \
+        openstack-neutron-openvswitch \
+        ; yum clean all
+
+VOLUME /var/lib/neutron
+VOLUME /var/lib/openvswitch
+
+ADD ./start.sh /start.sh
+ADD ./check.sh /check.sh
+
+CMD ["/start.sh"]
