@@ -2,7 +2,7 @@
 
 RES=0
 
-. /openrc
+. /admin-openrc
 if ! keystone token-get > /dev/null; then
     echo "ERROR: keystone token-get failed" >&2
     RES=1

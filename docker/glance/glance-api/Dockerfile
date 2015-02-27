@@ -1,9 +1,7 @@
 FROM kollaglue/fedora-rdo-glance-base
 MAINTAINER Kolla Project (https://launchpad.net/kolla)
 
-VOLUME /var/lib/glance
+ADD ./start.sh /opt/kolla/start.sh
+ADD ./check.sh /opt/kolla/check.sh
 
-ADD ./start.sh /start.sh
-ADD ./check.sh /check.sh
-
-CMD ["/start.sh"]
+CMD ["/opt/kolla/start.sh"]

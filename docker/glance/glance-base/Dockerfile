@@ -1,8 +1,8 @@
 FROM kollaglue/fedora-rdo-base
 MAINTAINER Kolla Project (https://launchpad.net/kolla)
 
-RUN yum -y install openstack-glance ; yum clean all
+# Install packages
+RUN yum -y install openstack-glance && yum clean all
 
-RUN mkdir -p /opt/kolla
+# Copy config script
 COPY config-glance.sh /opt/kolla/config-glance.sh
-

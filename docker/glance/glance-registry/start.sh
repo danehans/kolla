@@ -15,6 +15,10 @@ GRANT ALL PRIVILEGES ON ${GLANCE_DB_NAME}.* TO
 
 EOF
 
-/usr/bin/glance-manage db_sync
+# Initialize the Glance DB
+echo "Initializing Glance DB"
+if [ "${INIT_DB}" == "true" ] || [ "${INIT_DB}" == "True" ] ; then
+  /usr/bin/glance-manage db_sync
+fi
 
 exec /usr/bin/glance-registry
