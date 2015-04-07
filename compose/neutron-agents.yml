@@ -1,0 +1,18 @@
+neutronagents:
+  image: kollaglue/centos-rdo-agents:latest
+  name: neutron-agents
+#  pid: host
+  net: "host"
+  privileged: true
+  restart: always
+#  volumes:
+#    - /run:/run
+#    - /var/lock/neutron:/var/lock/neutron
+#    - /lib/modules:/lib/modules:ro
+#    - /var/lib/neutron:/var/lib/neutron
+#    - /var/lib/openvswitch:/var/lib/openvswitch
+# From https://www.youtube.com/watch?v=sBy0NVBPc9g
+#  cap_add:
+#    - NET_ADMIN
+  env_file:
+   - openstack.env
