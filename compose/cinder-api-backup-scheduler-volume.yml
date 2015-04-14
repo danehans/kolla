@@ -1,0 +1,39 @@
+cinderapi:
+   image: kollaglue/centos-rdo-cinder-api
+   name: cinder-api
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+
+cinderbackup:
+   image: kollaglue/centos-rdo-cinder-backup
+   name: cinder-backup
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+   volumes:
+    - /dev:/dev
+
+cinderscheduler:
+   image: kollaglue/centos-rdo-cinder-scheduler
+   name: cinder-scheduler
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+
+cindervolume:
+   image: kollaglue/centos-rdo-cinder-volume
+   name: cinder-volume
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+   volumes:
+    - /dev:/dev

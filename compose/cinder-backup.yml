@@ -1,0 +1,10 @@
+cinderbackup:
+   image: kollaglue/centos-rdo-cinder-backup
+   name: cinder-backup
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+   volumes:
+    - /dev:/dev

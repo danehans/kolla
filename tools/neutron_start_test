@@ -1,0 +1,22 @@
+#!/bin/bash
+if [[ $EUID -ne 0 ]]; then
+    echo "You must execute this script as root." 1>&2
+    exit 1
+fi
+
+# Move to top level directory
+REAL_PATH=$(python -c "import os,sys;print os.path.realpath('$0')")
+cd "$(dirname "$REAL_PATH")/.."
+
+# Get image
+image_src_path='download.cirros-cloud.net/0.3.3'
+image='cirros-0.3.3-x86_64-disk.img'
+image_name='cirros'
+
+if [ ! -f $image ]; then
+  curl -L -O http://$image_src_path/$image
+fi
+
+glance_image_check=$(glance image-list | grep $image_name)
+
+glance image-create --name $image_name --is-public=true --disk-format=qcow2 --container-format=bare < $image

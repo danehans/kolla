@@ -1,0 +1,14 @@
+cinderiscsitgt:
+   image: kollaglue/centos-rdo-cinder-iscsi-tgt:latest
+   name: cinder-iscsi-tgt
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+   volumes:
+     - /dev:/dev
+#     - /dev/loop3:/dev/loop3
+#     - /dev/disk:/dev/disk
+#     - /dev/mapper:/dev/mapper
+#     - /run/lvm/lvmetad.socket:/run/lvm/lvmetad.socket

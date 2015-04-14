@@ -115,17 +115,18 @@ fi
 #        $option
 #done
 
-crudini --set $cfg keystone_authtoken auth_uri "http://${KEYSTONE_PUBLIC_SERVICE_HOST}:5000/"
-crudini --set $cfg keystone_authtoken auth_protocol http
-crudini --set $cfg keystone_authtoken auth_host ${KEYSTONE_PUBLIC_SERVICE_HOST}
-crudini --set $cfg keystone_authtoken auth_port 5000
-
+# Keystone
+crudini --set $cfg keystone_authtoken auth_uri "${KEYSTONE_AUTH_PROTOCOL}://${KEYSTONE_PUBLIC_SERVICE_HOST}:${KEYSTONE_PUBLIC_SERVICE_PORT}/v2.0"
+crudini --set $cfg keystone_authtoken identity_uri "${KEYSTONE_AUTH_PROTOCOL}://${KEYSTONE_ADMIN_SERVICE_HOST}:${KEYSTONE_ADMIN_SERVICE_PORT}"
+crudini --del $cfg keystone_authtoken auth_protocol
+crudini --del $cfg keystone_authtoken auth_host
+crudini --del $cfg keystone_authtoken auth_port
 crudini --set $cfg keystone_authtoken admin_user ${NOVA_KEYSTONE_USER}
 crudini --set $cfg keystone_authtoken admin_password "${NOVA_KEYSTONE_PASSWORD}"
 crudini --set $cfg keystone_authtoken admin_tenant_name ${ADMIN_TENANT_NAME}
 
 cat > /openrc <<EOF
-export OS_AUTH_URL="http://${KEYSTONE_PUBLIC_SERVICE_HOST}:5000/v2.0"
+export OS_AUTH_URL="${KEYSTONE_AUTH_PROTOCOL}://${KEYSTONE_PUBLIC_SERVICE_HOST}:${KEYSTONE_PUBLIC_SERVICE_PORT}/v2.0"
 export OS_USERNAME="${NOVA_KEYSTONE_USER}"
 export OS_PASSWORD="${NOVA_KEYSTONE_PASSWORD}"
 export OS_TENANT_NAME="${ADMIN_TENANT_NAME}"

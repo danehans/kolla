@@ -1,0 +1,17 @@
+cindervolume:
+   image: kollaglue/centos-rdo-cinder-volume
+   name: cinder-volume
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+   volumes:
+    - /lib/modules:/lib/modules:ro
+    - /dev:/dev
+#    - /run/lvm/lvmetad.socket:/run/lvm/lvmetad.socket
+#    - /etc/target/saveconfig.json:/etc/target/saveconfig.json
+#    - /usr/bin/targetctl:/usr/bin/targetctl
+#    - /dev/loop3:/dev/loop3
+#    - /dev/disk:/dev/disk
+#    - /dev/mapper:/dev/mapper

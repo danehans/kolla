@@ -1,0 +1,41 @@
+#!/bin/bash
+if [[ $EUID -ne 0 ]]; then
+    echo "You must execute this script as root." 1>&2
+    exit 1
+fi
+
+# Move to top level directory
+REAL_PATH=$(python -c "import os,sys;print os.path.realpath('$0')")
+cd "$(dirname "$REAL_PATH")/.."
+
+# Get image
+#curl -L -O http://download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img
+#glance image-create --name cirros --is-public=true --disk-format=qcow2 --container-format=bare < cirros-0.3.3-x86_64-disk.img
+
+# Neutron Networking
+neutron net-create public225 --router:external True --provider:physical_network physnet225 --provider:network_type flat
+neutron subnet-create --name 225-subnet --disable-dhcp --allocation-pool start=192.168.225.150,end=192.168.225.250 public225 192.168.225.0/24 --gateway 192.168.225.1
+neutron net-create demo-net --provider:network_type vxlan --provider:segmentation_id 10
+neutron subnet-create demo-net --name demo-subnet --gateway 10.10.10.1 10.10.10.0/24 --dns_nameservers list=true 192.168.26.186
+neutron router-create demo-router
+neutron router-interface-add demo-router demo-subnet
+neutron router-gateway-set demo-router public225
+
+# Sec Group Config
+neutron security-group-rule-create default --direction ingress --ethertype IPv4 --protocol icmp --remote-ip-prefix 0.0.0.0/0
+neutron security-group-rule-create default --direction ingress --ethertype IPv4 --protocol tcp --port-range-min 22 --port-range-max 22 --remote-ip-prefix 0.0.0.0/0
+
+# get demo-net id
+demo_net_id=$(neutron net-list | grep demo-net | awk '{print$2}')
+
+# Boot vm
+nova boot --flavor m1.tiny --image cirros --nic net-id=$demo_net_id c1
+
+echo "Waiting for the instance to get an IP address"
+sleep 15
+
+instance_private_ip=$(nova show c1 | grep network | awk '{print $5;}')
+instance_port_id=$(neutron port-list | grep $instance_private_ip | awk '{print $2;}')
+floating_net_id=$(neutron net-list | grep public225 | awk '{print $2}')
+
+neutron floatingip-create --port-id $instance_port_id $floating_net_id

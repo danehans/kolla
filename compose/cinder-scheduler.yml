@@ -1,0 +1,8 @@
+cinderscheduler:
+   image: kollaglue/centos-rdo-cinder-scheduler
+   name: cinder-scheduler
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env

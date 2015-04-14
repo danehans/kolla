@@ -14,7 +14,7 @@ then
     crudini --set $cfg libvirt virt_type qemu
 fi
 
-#echo "Starting Restore LIO kernel target configuration"
-#/usr/bin/targetctl restore
+echo "Starting Restore LIO kernel target configuration"
+/usr/bin/targetctl restore
 
 mkdir -p /var/lib/nova/instances

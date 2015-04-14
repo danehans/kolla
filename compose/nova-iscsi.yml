@@ -1,0 +1,18 @@
+iscsi:
+   image: kollaglue/centos-rdo-nova-iscsi
+   name: iscsi
+   net: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+   volumes:
+    - /lib/modules:/lib/modules:ro
+    - /var/run/iscsid.pid:/var/run/iscsid.pid
+    - /sys/fs/cgroup:/sys/fs/cgroup
+    - /var/lock/iscsi:/var/lock/iscsi
+#    - /var/lib/nova:/var/lib/nova
+#    - /var/lib/libvirt:/var/lib/libvirt
+#    - /etc/libvirt/qemu:/etc/libvirt/qemu
+#   volumes_from:
+#    - computedata

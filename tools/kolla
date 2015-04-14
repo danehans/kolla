@@ -24,7 +24,7 @@ function process {
 }
 
 function process_all {
-    process rabbit
+    process rabbitmq
     process mariadb
     process keystone
     process glance-api-registry
@@ -39,19 +39,22 @@ function process_all {
     fi
     process heat-api-engine
     process horizon
+    process cinder-api
+    process cinder-scheduler
+    process cinder-volume
 }
 
-function check_selinux {
-  # Check for SELinux in Enforcing mode and exit if found
-  if [[ -x /usr/sbin/getenforce ]]; then
-      if [[ $(/usr/sbin/getenforce) == "Enforcing" ]]; then
-          echo "You must execute this script without SELinux enforcing mode."
-          echo "Turn off SELinux enforcing mode by running:"
-          echo "$ sudo setenforce permissive"
-          exit 1
-      fi
-  fi
-}
+#function check_selinux {
+#  # Check for SELinux in Enforcing mode and exit if found
+#  if [[ -x /usr/sbin/getenforce ]]; then
+#      if [[ $(/usr/sbin/getenforce) == "Enforcing" ]]; then
+#          echo "You must execute this script without SELinux enforcing mode."
+#          echo "Turn off SELinux enforcing mode by running:"
+#          echo "$ sudo setenforce permissive"
+#          exit 1
+#      fi
+#  fi
+#}
 
 function pre_start {
     check_selinux

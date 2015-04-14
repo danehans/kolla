@@ -1,0 +1,14 @@
+cinderiscsi:
+   image: kollaglue/centos-rdo-cinder-iscsi
+   name: cinder-iscsi
+   net: host
+   pid: host
+   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
+   volumes:
+    - /dev:/dev
+    - /var/lock/iscsi:/var/lock/iscsi
+    - /var/lib/iscsi:/var/lib/iscsi
+    - /lib/modules:/lib/modules

@@ -15,7 +15,10 @@ set -e
 
 check_required_vars CINDER_DB_PASSWORD CINDER_KEYSTONE_PASSWORD \
                     KEYSTONE_PUBLIC_SERVICE_HOST RABBITMQ_SERVICE_HOST \
-                    GLANCE_API_SERVICE_HOST MARIADB_SERVICE_HOST
+                    GLANCE_API_SERVICE_HOST MARIADB_SERVICE_HOST \
+                    RABBITMQ_SERVICE_HOST RABBITMQ_SERVICE_PORT \
+                    RABBIT_USERID RABBIT_PASSWORD GLANCE_API_SERVICE_HOST \
+                    GLANCE_API_SERVICE_PORT
 
 dump_vars
 
@@ -24,30 +27,24 @@ export OS_AUTH_URL="http://${KEYSTONE_PUBLIC_SERVICE_HOST}:${KEYSTONE_PUBLIC_SER
 export OS_USERNAME="${CINDER_KEYSTONE_USER}"
 export OS_PASSWORD="${CINDER_KEYSTONE_PASSWORD}"
 export OS_TENANT_NAME="${ADMIN_TENANT_NAME}"
+#export OS_VOLUME_API_VERSION=2
 EOF
 
 cfg=/etc/cinder/cinder.conf
 
-# logs
+# Logging
 crudini --set $cfg \
         DEFAULT \
-        log_dir
-crudini --set $cfg \
-        DEFAULT \
-        log_file \
-        ""
-
-# verbose
+        log_dir \
+        "${CINDER_LOG_DIR}"
 crudini --set $cfg \
         DEFAULT \
         verbose \
-        "True"
-
-# debug
+        "${VERBOSE_LOGGING}"
 crudini --set $cfg \
         DEFAULT \
         debug \
-        "False"
+        "${DEBUG_LOGGING}"
 
 # backend
 crudini --set $cfg \
@@ -63,11 +60,11 @@ crudini --set $cfg \
 crudini --set $cfg \
         DEFAULT \
         rabbit_port \
-        5672
+        ${RABBITMQ_SERVICE_PORT}
 crudini --set $cfg \
         DEFAULT \
         rabbit_hosts \
-        ${RABBITMQ_SERVICE_HOST}:5672
+        ${RABBITMQ_SERVICE_HOST}:${RABBITMQ_SERVICE_PORT}
 crudini --set $cfg \
         DEFAULT \
         rabbit_userid \
@@ -85,11 +82,21 @@ crudini --set /etc/cinder/cinder.conf \
         rabbit_ha_queues \
         "False"
 
+# control_exchange
+crudini --set /etc/cinder/cinder.conf \
+        DEFAULT \
+        control_exchange \
+        "openstack"
+
 # glance
 crudini --set $cfg \
         DEFAULT \
         glance_host \
         ${GLANCE_API_SERVICE_HOST}
+crudini --set $cfg \
+        DEFAULT \
+        glance_port \
+        ${GLANCE_API_SERVICE_PORT}
 
 # database
 crudini --set $cfg \
@@ -102,22 +109,23 @@ crudini --set $cfg \
         DEFAULT \
         auth_strategy \
         "keystone"
-crudini --set $cfg \
+crudini --del $cfg \
         keystone_authtoken \
-        auth_protocol \
-        ${KEYSTONE_AUTH_PROTOCOL}
-crudini --set $cfg \
+        auth_protocol
+crudini --del $cfg \
         keystone_authtoken \
-        auth_host \
-        ${KEYSTONE_PUBLIC_SERVICE_HOST}
-crudini --set $cfg \
+        auth_host
+crudini --del $cfg \
         keystone_authtoken \
-        auth_port \
-        ${KEYSTONE_PUBLIC_SERVICE_PORT}
+        auth_port
 crudini --set $cfg \
         keystone_authtoken \
         auth_uri \
         ${KEYSTONE_AUTH_PROTOCOL}://${KEYSTONE_PUBLIC_SERVICE_HOST}:${KEYSTONE_PUBLIC_SERVICE_PORT}/v2.0
+crudini --set $cfg \
+        keystone_authtoken \
+        identity_uri \
+        ${KEYSTONE_AUTH_PROTOCOL}://${KEYSTONE_ADMIN_SERVICE_HOST}:${KEYSTONE_ADMIN_SERVICE_PORT}
 crudini --set $cfg \
         keystone_authtoken \
         admin_tenant_name \

@@ -5,20 +5,10 @@ set -e
 . /opt/kolla/kolla-common.sh
 . /opt/kolla/config-cinder.sh
 
-: ${BACKUP_DRIVER:= cinder.backup.drivers.swift}
-: ${BACKUP_MANAGER:= cinder.backup.manager.BackupManager}
-: ${BACKUP_API_CLASS:= cinder.backup.api.API}
-: ${BACKUP_NAME_TEMPLATE:= backup-%s}
+check_required_vars BACKUP_DRIVER BACKUP_MANAGER BACKUP_API_CLASS \
+                    BACKUP_NAME_TEMPLATE
 
-#-----Cinder.conf setup-----
-
-# control_exchange
-crudini --set /etc/cinder/cinder.conf \
-        DEFAULT \
-        control_exchange \
-        "openstack"
-
-# volume backups
+# volume backup configuration
 crudini --set /etc/cinder/cinder.conf \
         DEFAULT \
         backup_driver \
@@ -39,10 +29,6 @@ crudini --set /etc/cinder/cinder.conf \
         DEFAULT \
         backup_name_template \
         "${BACKUP_NAME_TEMPLATE}"
-crudini --set /etc/cinder/cinder.conf \
-        DEFAULT \
-        volume_backup_name \
-        "DEFAULT"
 
 echo "Starting cinder-backup"
-exec /usr/bin/cinder-backup
+exec /usr/bin/cinder-backup --config-file /etc/cinder/cinder.conf

@@ -1,0 +1,8 @@
+cinderapi:
+   image: kollaglue/centos-rdo-cinder-api
+   name: cinder-api
+   net: host
+#   privileged: true
+   restart: always
+   env_file:
+    - openstack.env
